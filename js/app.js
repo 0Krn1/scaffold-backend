@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const userQuery = `Generate three creative activities for a child in the age group: "${age}". All activities must be suitable for the environment: "${location}". All activities should be personalized based on the child's unique interests and available resources: "${preferences}". Ensure each activity focuses on a different developmental aspect and is easy to understand and safe for the specified age group.`;
         
         try {
-            const response = await fetch("http://localhost:3000/generate", {
+            const response = await fetch("https://scaffold-backend-1.onrender.com/", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"

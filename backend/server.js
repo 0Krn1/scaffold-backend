@@ -10,13 +10,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Test route
 app.get("/", (req, res) => {
-    res.send("Backend is running ");
+    res.send("Backend is running 🚀");
 });
 
 app.post("/generate", async (req, res) => {
     try {
         const { age, location, preferences } = req.body;
+
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ error: "API key missing" });
+        }
 
         const systemPrompt = `Act as a world-class early childhood education expert and creative curriculum designer. Generate three distinct, detailed, age-appropriate activities in JSON array format.`;
 
@@ -46,7 +51,14 @@ app.post("/generate", async (req, res) => {
 
         const data = await response.json();
 
-        res.json(data);
+        // Send only useful content to frontend
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!text) {
+            return res.status(500).json({ error: "No response from AI" });
+        }
+
+        res.json({ result: text });
 
     } catch (error) {
         console.error("Backend Error:", error);
@@ -54,6 +66,9 @@ app.post("/generate", async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+// ✅ FIXED PORT FOR RENDER
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
