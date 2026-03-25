@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaffold: Creative Child Development Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <canvas id="asciiCanvas"></canvas>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body class="min-h-screen">
+    
+<div id="intro-screen">
+  <canvas id="intro-canvas"></canvas>
+  <div id="intro-title">SCAFFOLD</div>
+</div>
+    
+<div id="ascii-container" class="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0"></div>
+
+
+    <!-- 1. WELCOME MODAL -->
+    <div id="welcome-modal" class="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4">
+        <div class="modal-content w-full max-w-lg shadow-2xl p-6 md:p-8">
+            <h2 class="text-3xl font-extrabold text-center mb-4 text-[#20B2AA]">Welcome to Scaffold!</h2>
+            <p class="text-center text-gray-600 mb-6">
+                Ladders For Littles is designed to give your child's creativity a boost.
+            </p>
+            
+            <div class="space-y-4 text-left">
+                <h3 class="text-xl font-bold text-[#FFD700]">The "Scaffolding" Concept</h3>
+                <p class="text-gray-700">
+                    We use the term **Scaffold** because we provide the necessary support—or "ladders"—to help your child reach their next developmental milestone. Every activity is a thoughtful step upward!
+                </p>
+                <p class="text-lg font-bold text-[#20B2AA] pt-4">Your Three Questions (Ladder's Base):</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 pl-4">
+                    <li>**Ladder For?** (Age Group)</li>
+                    <li>**Ladder At?** (Location/Environment)</li>
+                    <li>**Ladder Of?** (Interests & Resources)</li>
+                </ul>
+            </div>
+
+            <button id="close-modal-btn" class="button-gradient w-full text-white font-bold py-3 px-4 rounded-xl text-lg mt-8 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+                Start Climbing!
+            </button>
+        </div>
+    </div>
+    <!-- END WELCOME MODAL -->
+
+    <!-- Fixed Navigation Bar -->
+<nav role="navigation" aria-label="Main Navigation"
+     class="fixed top-0 left-0 right-0 shadow-lg z-50 p-4 md:p-6 border-b-4 border-[#FFD700]
+            bg-gradient-to-r from-white via-white-200 to-white">
+    
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-extrabold text-[#20B2AA] flex items-center space-x-2">
+    <svg class="w-6 h-6 text-[#111118]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <!-- Simple ladder icon -->
+        <line x1="6" y1="2" x2="6" y2="22" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="18" y1="2" x2="18" y2="22" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="6" y1="6" x2="18" y2="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="6" y1="10" x2="18" y2="10" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="6" y1="14" x2="18" y2="14" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="6" y1="18" x2="18" y2="18" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Scaffold</span>
+        <span id="ladder-animation" class="ladder-container"></span>
+
+</h1>
+
+        <ul class="flex space-x-4 md:space-x-8 text-black-600 font-semibold">
+            <li>
+                <a href="#home" class="nav-link flex items-center space-x-1" data-page="home">
+                    <span>Home</span>
+                    <!-- Info Icon (SVG) -->
+                    <svg class="w-4 h-4 text-[#20B2AA]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8 4a1 1 0 100-2 1 1 0 000 2zm.75-7.25a.75.75 0 00-1.5 0v.5a.75.75 0 001.5 0v-.5zM10 9a.75.75 0 00-.75.75v2.5a.75.75 0 001.5 0v-2.5A.75.75 0 0010 9z" clip-rule="evenodd" />
+                    </svg>
+                    </a>
+            </li>
+            <li>
+                <a href="#about" class="nav-link flex items-center space-x-1" data-page="about">
+                    <span>About</span>
+                    <!-- Info Icon (SVG) -->
+                    <svg class="w-4 h-4 text-[#20B2AA]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8 4a1 1 0 100-2 1 1 0 000 2zm.75-7.25a.75.75 0 00-1.5 0v.5a.75.75 0 001.5 0v-.5zM10 9a.75.75 0 00-.75.75v2.5a.75.75 0 001.5 0v-2.5A.75.75 0 0010 9z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="#profile" class="nav-link flex items-center space-x-1" data-page="profile">
+                <span>Profile</span>
+                    <!-- Info Icon (SVG) -->
+                    <svg class="w-4 h-4 text-[#20B2AA]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8 4a1 1 0 100-2 1 1 0 000 2zm.75-7.25a.75.75 0 00-1.5 0v.5a.75.75 0 001.5 0v-.5zM10 9a.75.75 0 00-.75.75v2.5a.75.75 0 001.5 0v-2.5A.75.75 0 0010 9z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="#contact" class="nav-link flex items-center space-x-1" data-page="contact">
+                <span>Contact Us</span>
+                    <!-- Info Icon (SVG) -->
+                    <svg class="w-4 h-4 text-[#20B2AA]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8 4a1 1 0 100-2 1 1 0 000 2zm.75-7.25a.75.75 0 00-1.5 0v.5a.75.75 0 001.5 0v-.5zM10 9a.75.75 0 00-.75.75v2.5a.75.75 0 001.5 0v-2.5A.75.75 0 0010 9z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav> 
+
+<!-- About Page Content --> 
+<section id="about-page" class="w-full max-w-4xl mx-auto my-8 page-content z-20 relative hidden">
+    <div class="container rounded-3xl p-8 md:p-12 text-center">
+        <h2 class="text-4xl font-extrabold text-[#20B2AA] mb-4">The Scaffolding Philosophy</h2>
+        <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+            The heart of <strong>Scaffold</strong> is the educational principle of <strong>Scaffolding</strong>, derived from psychologist Lev Vygotsky's Zone of Proximal Development. This means we provide exactly the right amount of support—or a "ladder"—to help your child master a new skill just beyond their current capability.
+        </p>
+        <div class="mt-8 pt-4 border-t border-gray-200">
+            <h3 class="text-2xl font-bold text-yellow-500 mb-3">Our Goal: Creative Development</h3>
+            <p class="text-gray-600 leading-relaxed">
+                Our curriculum, designed with advanced AI modeling based on world-class early childhood research, focuses not on rote learning but on <strong>divergent thinking, problem-solving, and creative expression</strong>. Every activity, or "Ladder," is a personalized step to foster a lifelong love of learning and exploration. We aim to make the learning process joyful and engaging for both children and caregivers.
+            </p>
+        </div>
+    </div>
+</section>    
+    <!-- Main Content Wrapper -->
+    <main class="relative flex items-center justify-center pt-8 p-4 overflow-hidden min-h-[80vh]">
+    
+       
+        
+        <!-- Home Page Content -->
+        <section id="home-page" class="w-full max-w-6xl mx-auto my-8 page-content z-20 relative">
+            <div class="container rounded-3xl p-8 md:p-12">
+                
+                <!-- Header Section -->
+                <header class="text-center mb-10 relative h-48 flex items-center justify-center">
+                    <div class="absolute text-center">
+                        <span class="text-gradient text-[5rem] md:text-[7rem] font-extrabold select-none leading-none opacity-50">SCAFFOLD  </span>
+                           <span class="ladder">
+            <span class="rail rail-left"></span>
+            <span class="rail rail-right"></span>
+            <span class="rung"></span>
+            <span class="rung"></span>
+            <span class="rung"></span>
+            <span class="rung"></span>
+            <span class="rung"></span>
+            </span>
+                    </div>
+                    <h1 class="absolute text-black font-extrabold whitespace-nowrap flex items-center justify-center leading-tight
+                    top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                        <span class="text-3xl md:text-4xl">Ladders For Littles</span>
+    
+                    </h1>
+                </header>
+                
+                <!-- NEW START BUTTON -->
+                <div id="start-button-container" class="text-center mb-10">
+                    <button id="start-form-btn" class="button-gradient text-white font-bold py-4 px-8 rounded-full text-xl shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-105">
+                        Let's Get Started!
+                    </button>
+                </div>
+                <!-- END NEW START BUTTON -->
+                
+                <!-- Input Form Section (Now wrapped and hidden by default) -->
+                <div id="form-wrapper" class="hidden">
+                    <form id="details-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Age Group -->
+                            <div class="text-center">
+                                <label for="child-age" class="block text-gray-700 font-semibold mb-2">Ladder for ? (Age Group)</label>
+                                <select id="child-age" name="child-age" required class="w-full p-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#20B2AA] focus:border-[#20B2AA] transition-all duration-300 text-center">
+                                    <option value="" disabled selected>Select an age group</option>
+                                    <option value="0-1 year">0-1 year (Infant)</option>
+                                    <option value="1-3 years">1-3 years (Toddler)</option>
+                                    <option value="3-5 years">3-5 years (Preschooler)</option>
+                                    <option value="5-8 years">5-8 years (Early School Age)</option>
+                                    <option value="8-12 years">8-12 years (Middle Childhood)</option>
+                                    <option value="12+ years">12+ years (Pre-teen)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Activity Location -->
+                            <div class="text-center">
+                                <label for="activity-location" class="block text-gray-700 font-semibold mb-2">Ladder at ? (Location)</label>
+                                <select id="activity-location" name="activity-location" required class="w-full p-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#20B2AA] focus:border-[#20B2AA] transition-all duration-300 text-center">
+                                    <option value="" disabled selected>Where will the activity take place?</option>
+                                    <option value="Indoors (Home or Classroom)">Indoors</option>
+                                    <option value="Outdoors (Park or Backyard)">Outdoors</option>
+                                    <option value="Both Indoors and Outdoors">Flexible</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Interests & Resources -->
+                            <div class="text-center md:col-span-1">
+                                <label for="child-preferences" class="block text-gray-700 font-semibold mb-2">Ladder of ? (Interests)</label>
+                                <textarea id="child-preferences" name="child-preferences" rows="1" placeholder="e.g., Building blocks, painting, music, or only paper and crayons" class="w-full p-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#20B2AA] focus:border-[#20B2AA] transition-all duration-300 text-center placeholder:text-center" required></textarea>
+                            </div>
+                        </div>
+                       
+                        <button type="submit" id="generate-button" class="button-gradient w-full text-white font-bold py-3 px-4 rounded-xl text-lg mt-8 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+                            Generate 3 Ladder Options!
+                        </button>
+                    </form>
+                </div>
+                <!-- END Input Form Section -->
+                
+                <!-- Placeholder for Suggestions -->
+                <div id="suggestions-output" class="mt-10">
+                    <!-- Results will be loaded here -->
+                </div>
+
+                <!-- Error/Loading Message Modal -->
+                <div id="status-modal" class="fixed inset-0 z-[110] modal-overlay flex items-center justify-center p-4 hidden">
+                    <div id="status-content" class="modal-content w-full max-w-sm shadow-2xl p-6 md:p-8 text-center">
+                        <!-- Ladder Building SVG Loader -->
+                        <div id="loader-spinner" class="ladder-loader mx-auto mb-4">
+                            <svg viewBox="0 0 60 60" class="w-16 h-16">
+                                <!-- Vertical Lines (The frame of the ladder) -->
+                                <rect x="10" y="0" width="4" height="60" fill="#FFD700" rx="2"/>
+                                <rect x="46" y="0" width="4" height="60" fill="#FFD700" rx="2"/>
+
+                                <!-- Rungs (Animated with sequential building keyframes) -->
+                                <!-- Rung 1: Bottom -->
+                                <rect class="ladder-rung" style="animation-name: rung-1-build;" x="12" y="50" width="36" height="4" fill="#20B2AA" rx="1"/>
+                                <!-- Rung 2: Middle -->
+                                <rect class="ladder-rung" style="animation-name: rung-2-build;" x="12" y="28" width="36" height="4" fill="#20B2AA" rx="1"/>
+                                <!-- Rung 3: Top -->
+                                <rect class="ladder-rung" style="animation-name: rung-3-build;" x="12" y="6" width="36" height="4" fill="#20B2AA" rx="1"/>
+                            </svg>
+                        </div>
+                        <p id="status-text" class="text-lg font-semibold text-gray-700">Creating the ladder...</p>
+                        <button id="close-status-modal" class="button-gradient w-full text-white font-bold py-2 px-4 rounded-xl text-sm mt-4 hidden">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- About Page Content -->
+        <section id="about-page" class="w-full max-w-4xl mx-auto my-8 page-content z-20 relative hidden">
+            <div class="container rounded-3xl p-8 md:p-12 text-center">
+                <h2 class="text-4xl font-extrabold text-[#20B2AA] mb-4">The Scaffolding Philosophy</h2>
+                <p class="mt-4 text-lg text-gray-700 leading-relaxed">
+                    The heart of **Scaffold** is the educational principle of **Scaffolding**, derived from Vygotsky's Zone of Proximal Development. This means we provide exactly the right amount of support—or a "ladder"—to help your child master a new skill just beyond their current capability.
+                </p>
+                <div class="mt-8 pt-4 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-[#FFD700] mb-3">Our Goal: Creative Development</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Our curriculum, designed with advanced AI modeling based on world-class early childhood research, focuses not on rote learning but on **divergent thinking, problem-solving, and creative expression**. Every activity, or "Ladder," is a personalized step to foster a lifelong love of learning and exploration. We aim to make the learning process joyful and engaging for both children and caregivers.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Profile Page Content (Updated with User ID Display) -->
+        <section id="profile-page" class="w-full max-w-4xl mx-auto my-8 page-content z-20 relative hidden">
+            <div class="container rounded-3xl p-8 md:p-12 text-center">
+                <h2 class="text-4xl font-extrabold text-[#FFD700] mb-8">Your Creative Journey</h2>
+                
+                <div class="mb-8 p-4 bg-gray-50 border-l-4 border-[#20B2AA] rounded-lg">
+                    <h3 class="text-lg font-bold text-gray-800">Your Unique User Identifier</h3>
+                    <p class="text-sm text-gray-600 mb-2">This ID is required to save your progress, track badges, and retrieve your data across sessions. Share this ID to collaborate with others!</p>
+                    <div id="user-id-display" class="font-mono text-sm break-all p-3 bg-white rounded-lg shadow-inner text-gray-900">
+                        Loading User ID...
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 text-left">
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#20B2AA] flex items-center mb-3">
+                            Saved Ladders
+                        </h3>
+                        <p class="text-gray-700">All activities you mark as 'completed' or 'favorites' will appear here (requires future integration with Firestore). Use this section to track which developmental focuses (Fine Motor, Abstract Thinking, etc.) you've explored the most.</p>
+                        <ul class="list-disc list-inside text-gray-500 mt-4 ml-4">
+                            <li>Placeholder: Saved Activity 1 (Art)</li>
+                            <li>Placeholder: Saved Activity 2 (Logic)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#FFD700] flex items-center mb-3">
+                            Badges & Milestones
+                        </h3>
+                        <p class="text-gray-700">Earn recognition for completing a variety of 'Ladders' in different developmental areas. Badges mark significant steps in your child's creative progression.</p>
+                        <div class="flex space-x-4 mt-4 justify-center md:justify-start">
+                            <span class="inline-block bg-gray-200 text-gray-700 text-sm font-semibold px-3 py-1 rounded-full shadow">Starter</span>
+                            <span class="inline-block bg-gray-200 text-gray-700 text-sm font-semibold px-3 py-1 rounded-full shadow">Explorer</span>
+                            <span class="inline-block bg-gray-200 text-gray-700 text-sm font-semibold px-3 py-1 rounded-full shadow">Creator</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Us Page Content -->
+        <section id="contact-page" class="w-full max-w-4xl mx-auto my-8 page-content z-20 relative hidden">
+            <div class="container rounded-3xl p-8 md:p-12 text-center">
+                <h2 class="text-4xl font-extrabold text-[#20B2AA] mb-4">Connect With Us</h2>
+                <p class="mt-4 text-lg text-gray-700 mb-8">
+                    Have a question about an activity, need technical help, or just want to share your child's creative success? We love hearing from our climbers!
+                </p>
+
+                <div class="max-w-md mx-auto space-y-6">
+                    <div class="bg-yellow-50 p-4 rounded-xl border border-[#FFD700] shadow-sm">
+                        <p class="font-semibold text-gray-800">General Inquiries:</p>
+                        <a href="mailto:support@scaffoldlittles.com" class="text-[#20B2AA] hover:underline">support@scaffoldlittles.com</a>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-[#20B2AA] shadow-sm">
+                        <p class="font-semibold text-gray-800">Curriculum Feedback:</p>
+                        <a href="mailto:feedback@scaffoldlittles.com" class="text-[#20B2AA] hover:underline">feedback@scaffoldlittles.com</a>
+                    </div>
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-[#20B2AA] mb-4">Send us a Message</h3>
+                    <form class="space-y-4 text-left">
+                        <div>
+                            <label for="contact-name" class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" id="contact-name" class="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-[#FFD700] focus:border-[#FFD700]">
+                        </div>
+                        <div>
+                            <label for="contact-email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="contact-email" class="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-[#FFD700] focus:border-[#FFD700]">
+                        </div>
+                        <div>
+                            <label for="contact-message" class="block text-sm font-medium text-gray-700">Message</label>
+                            <textarea id="contact-message" rows="4" class="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-[#FFD700] focus:border-[#FFD700]"></textarea>
+                        </div>
+                        <button type="submit" class="button-gradient w-full text-white font-bold py-3 px-4 rounded-xl">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+<canvas id="paintTrail"></canvas>
+
+
+    </main>
+<script src="js/app.js"></script>
+<script>
+const canvas = document.getElementById("intro-canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const particles = [];
+
+for(let i=0;i<100;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+vx:(Math.random()-0.5)*4,
+vy:(Math.random()-0.5)*4,
+char:letters[Math.floor(Math.random()*letters.length)]
+});
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="white";
+ctx.font="20px monospace";
+
+particles.forEach(p=>{
+p.x+=p.vx;
+p.y+=p.vy;
+ctx.fillText(p.char,p.x,p.y);
+});
+
+requestAnimationFrame(animate);
+}
+
+animate();
+
+setTimeout(()=>{
+document.getElementById("intro-title").classList.add("show");
+},2000);
+
+setTimeout(()=>{
+document.getElementById("intro-screen").style.display="none";
+},5000);
+</script>
+</body>
+</html>
