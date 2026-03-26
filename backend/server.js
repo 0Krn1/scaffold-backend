@@ -1,13 +1,14 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const fetch = require("node-fetch");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://scaffold-8d6a2.web.app' // Replace with your actual Firebase URL
+}));
 app.use(express.json());
 
 // Test route
@@ -24,18 +25,13 @@ app.post("/generate", async (req, res) => {
         }
 
 const systemPrompt = `
-You are an expert in early childhood education.
-
-STRICT RULES:
-- Return ONLY valid JSON
-- No explanation, no text outside JSON
-- Format must be an array of 3 objects
-
-Each object must have:
-- title
-- description
-- materials
-- steps (array)
+Return ONLY a JSON array of 3 objects.
+Each object MUST have:
+- title (string)
+- focusArea (string)
+- materials (array of strings)
+- steps (array of strings)
+- whyItWorks (string)
 `;
 
         const userQuery = `Generate three creative activities for a child:
