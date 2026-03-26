@@ -23,12 +23,26 @@ app.post("/generate", async (req, res) => {
             return res.status(500).json({ error: "API key missing" });
         }
 
-        const systemPrompt = `Act as a world-class early childhood education expert and creative curriculum designer. Generate three distinct, detailed, age-appropriate activities in JSON array format.`;
+const systemPrompt = `
+You are an expert in early childhood education.
+
+STRICT RULES:
+- Return ONLY valid JSON
+- No explanation, no text outside JSON
+- Format must be an array of 3 objects
+
+Each object must have:
+- title
+- description
+- materials
+- steps (array)
+`;
 
         const userQuery = `Generate three creative activities for a child:
         Age: ${age}
         Location: ${location}
-        Preferences: ${preferences}`;
+        Preferences: ${preferences}
+        Return ONLY JSON array.`;
 
         const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -54,9 +68,10 @@ app.post("/generate", async (req, res) => {
         // Send only useful content to frontend
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-        if (!text) {
-            return res.status(500).json({ error: "No response from AI" });
-        }
+       if (!text) {
+    console.error("FULL RESPONSE:", data);
+    return res.status(500).json({ error: "AI returned empty response" });
+}
 
         res.json({ result: text });
 
@@ -66,7 +81,7 @@ app.post("/generate", async (req, res) => {
     }
 });
 
-// ✅ FIXED PORT FOR RENDER
+// FIXED PORT FOR RENDER
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
