@@ -311,6 +311,7 @@ margin-left:15px;
   width: 100vw; height: 100vh;
   pointer-events: none;
   z-index: 9999;
+  display: block;
 }
 
 .custom-gradient {

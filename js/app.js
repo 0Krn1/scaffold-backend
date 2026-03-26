@@ -4,7 +4,7 @@ const canvas = document.getElementById("intro-canvas");
 
 if(!canvas) return;
 
-ctx = canvas.getContext("2d");
+introctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -30,10 +30,10 @@ char:letters[Math.floor(Math.random()*letters.length)]
 
 function animate(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+introctx.clearRect(0,0,canvas.width,canvas.height);
 
-ctx.fillStyle="white";
-ctx.font="20px monospace";
+introctx.fillStyle="white";
+introctx.font="20px monospace";
 
 particles.forEach(p=>{
 
@@ -43,7 +43,7 @@ p.y+=p.vy;
 if(p.x<0||p.x>canvas.width) p.vx*=-1;
 if(p.y<0||p.y>canvas.height) p.vy*=-1;
 
-ctx.fillText(p.char,p.x,p.y);
+introctx.fillText(p.char,p.x,p.y);
 
 });
 
@@ -453,7 +453,7 @@ function drawpaintTrail(){
   }
   last.x=mouse.x; last.y=mouse.y;
 
-  paintctx.clearRect(0,0,c.width,c.height);
+  paintctx.clearRect(0,0,paintCanvas.width,paintCanvas.height);
   strokes.forEach(s=>{
     const grad=paintctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r);
     grad.addColorStop(0,`rgba(0,0,0,${s.life})`);
