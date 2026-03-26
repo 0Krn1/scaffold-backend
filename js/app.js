@@ -419,10 +419,10 @@ function createAscii() {
 // Generate new ASCII every 200ms
 setInterval(createAscii, Math.random()*800 + 400);
 
-const c = document.getElementById('paintTrail');
-ctx = c.getContext('2d');
+const paintCanvas = document.getElementById('paintTrail');
+paintctx = paintCanvas.getContext('2d');
 
-function resize(){ c.width=innerWidth; c.height=innerHeight; }
+function resize(){ paintCanvas.width=innerWidth; paintCanvas.height=innerHeight; }
 resize(); addEventListener('resize',resize);
 
 let strokes=[];
@@ -442,7 +442,7 @@ function addStroke(x,y){
 }
 
 
-function draw(){
+function drawpaintTrail(){
 
   // interpolate between last and current cursor to fill the path
   const dx=mouse.x-last.x, dy=mouse.y-last.y;
@@ -453,23 +453,23 @@ function draw(){
   }
   last.x=mouse.x; last.y=mouse.y;
 
-  ctx.clearRect(0,0,c.width,c.height);
+  paintctx.clearRect(0,0,c.width,c.height);
   strokes.forEach(s=>{
-    const grad=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r);
+    const grad=paintctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r);
     grad.addColorStop(0,`rgba(0,0,0,${s.life})`);
     grad.addColorStop(0.4,`rgba(0,0,0,${s.life*0.3})`);
     grad.addColorStop(1,'rgba(0,225,225,225)');
 
-    ctx.filter='blur(15px)';
-    ctx.globalCompositeOperation='lighter';
-    ctx.fillStyle=grad;
-    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,5,2*Math.PI*1); ctx.fill();
+    paintctx.filter='blur(15px)';
+    paintctx.globalCompositeOperation='lighter';
+    paintctx.fillStyle=grad;
+    paintctx.beginPath(); paintctx.arc(s.x,s.y,s.r,5,2*Math.PI*1); paintctx.fill();
 
     s.life-=0.30;          // slower fade for continuous feel
   });
 
   strokes=strokes.filter(s=>s.life>0);
-  requestAnimationFrame(draw);
+  requestAnimationFrame(drawpaintTrail);
 }
-draw();
+drawpaintTrail();
 
