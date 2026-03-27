@@ -23,8 +23,12 @@ app.post("/generate", async (req, res) => {
         if (!process.env.GEMINI_API_KEY) {
             return res.status(500).json({ error: "API key missing" });
         }
+const safetySettings = [
+    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_ONLY_HIGH" },
+    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" }
+];
 
-const systemPrompt = `
+    const systemPrompt = `
 Return ONLY a JSON array of 3 objects.
 Each object MUST have:
 - title (string)
@@ -41,7 +45,7 @@ Each object MUST have:
         Return ONLY JSON array.`;
 
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
                 method: "POST",
                 headers: {
@@ -52,6 +56,7 @@ Each object MUST have:
                     systemInstruction: {
                         parts: [{ text: systemPrompt }]
                     },
+                    safetySettings,
                     generationConfig: {
                         responseMimeType: "application/json"
                     }
