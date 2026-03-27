@@ -21,67 +21,54 @@ app.post("/generate", async (req, res) => {
         const { age, location, preferences } = req.body;
 
         if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ error: "API key missing" });
+            return res.status(500).json({ error: "API key missing on Render" });
         }
-const safetySettings = [
-    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_ONLY_HIGH" },
-    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" }
-];
 
-    const systemPrompt = `
-Return ONLY a JSON array of 3 objects.
-Each object MUST have:
-- title (string)
-- focusArea (string)
-- materials (array of strings)
-- steps (array of strings)
-- whyItWorks (string)
-`;
+        const systemPrompt = "Return ONLY a JSON array of 3 objects. No introductory text. Fields: title, focusArea, materials (array), steps (array), whyItWorks.";
 
-        const userQuery = `Generate three creative activities for a child:
-        Age: ${age}
-        Location: ${location}
-        Preferences: ${preferences}
-        Return ONLY JSON array.`;
+        const userQuery = `Generate 3 creative activities for a child. Age: ${age}. Location: ${location}. Interests: ${preferences}.`;
 
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: userQuery }] }],
-                    systemInstruction: {
-                        parts: [{ text: systemPrompt }]
-                    },
-                    safetySettings,
-                    generationConfig: {
-                        responseMimeType: "application/json"
-                    }
-                })
-            }
-        );
+        // FIXED URL: Using 1.5-flash (Stable)
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                // FIX 2: Stop the safety filter from blocking "child" content
+                safetySettings: [
+                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" }
+                ],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    temperature: 0.7
+                }
+            })
+        });
 
         const data = await response.json();
-        console.log(JSON.stringify(data, null, 2));
-        // Send only useful content to frontend
+
+        // LOGGING: This will show up in your Render "Logs" tab so you can see the REAL error
+        console.log("Gemini Raw Response:", JSON.stringify(data));
+
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-       if (!text) {
-    console.error("FULL RESPONSE:", data);
-    return res.status(500).json({ error: "AI returned empty response" });
-}
+        if (!text) {
+            // Check if it was blocked by safety
+            const reason = data?.candidates?.[0]?.finishReason || "UNKNOWN_ERROR";
+            return res.status(500).json({ error: `Gemini blocked request. Reason: ${reason}` });
+        }
 
         res.json({ result: text });
 
     } catch (error) {
-        console.error("Backend Error:", error);
-        res.status(500).json({ error: "Something went wrong" });
+        console.error("Backend Crash:", error);
+        res.status(500).json({ error: "Server crashed while talking to Gemini" });
     }
 });
-
 // FIXED PORT FOR RENDER
 const PORT = process.env.PORT || 3000;
 
