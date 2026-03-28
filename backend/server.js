@@ -1,19 +1,23 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
 
 const app = express();
 
+// Initialize Gemini SDK
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 app.use(cors({
-    origin: 'https://scaffold-8d6a2.web.app' // Replace with your actual Firebase URL
+    origin: 'https://scaffold-8d6a2.web.app' 
 }));
 app.use(express.json());
 
 // Test route
 app.get("/", (req, res) => {
-    res.send("Backend is running ");
+    res.send("Backend is running");
 });
 
 app.post("/generate", async (req, res) => {
@@ -24,54 +28,47 @@ app.post("/generate", async (req, res) => {
             return res.status(500).json({ error: "API key missing on Render" });
         }
 
-        const systemPrompt = "Return ONLY a JSON array of 3 objects. No introductory text. Fields: title, focusArea, materials (array), steps (array), whyItWorks.";
-
-        const userQuery = `Generate 3 creative activities for a child. Age: ${age}. Location: ${location}. Interests: ${preferences}.`;
-
-        // FIXED URL: Using 1.5-flash (Stable)
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
-
-        const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-                // FIX 2: Stop the safety filter from blocking "child" content
-                safetySettings: [
-                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" }
-                ],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    temperature: 0.7
-                }
-            })
+        // 1. Initialize the model using the SDK
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-1.5-flash",
+            generationConfig: { 
+                responseMimeType: "application/json",
+                temperature: 0.8 
+            }
         });
 
-        const data = await response.json();
+        const systemPrompt = "Act as an early childhood expert. Return ONLY a JSON array of 3 objects. Fields: title, focusArea, materials (array), steps (array), whyItWorks.";
+        const userQuery = `Generate 3 creative activities for a child. Age: ${age}. Location: ${location}. Interests/Available Materials: ${preferences}.`;
 
-        // LOGGING: This will show up in your Render "Logs" tab so you can see the REAL error
-        console.log("Gemini Raw Response:", JSON.stringify(data));
+        // 2. Generate content using the SDK
+        const result = await model.generateContent(`${systemPrompt}\n\n${userQuery}`);
+        const response = await result.response;
+        const text = response.text();
 
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        // 3. Log for debugging in Render Logs
+        console.log("Gemini Generated Content:", text);
 
-        if (!text) {
-            // Check if it was blocked by safety
-            const reason = data?.candidates?.[0]?.finishReason || "UNKNOWN_ERROR";
-            return res.status(500).json({ error: `Gemini blocked request. Reason: ${reason}` });
-        }
-
+        // 4. Send the result back to your app.js
         res.json({ result: text });
 
     } catch (error) {
-        console.error("Backend Crash:", error);
-        res.status(500).json({ error: "Server crashed while talking to Gemini" });
+        console.error("Backend Error:", error);
+        res.status(500).json({ 
+            error: "The AI ladder broke!", 
+            details: error.message 
+        });
     }
 });
+
 // FIXED PORT FOR RENDER
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000; // Render prefers 10000 or uses process.env.PORT automatically
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    // Helpful check to see if the API key is loaded (don't log the key itself!)
+    if (process.env.GEMINI_API_KEY) {
+        console.log(" Gemini API Key detected.");
+    } else {
+        console.log(" ERROR: Gemini API Key is missing.");
+    }
 });
